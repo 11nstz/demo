@@ -1,0 +1,11 @@
+D:\vscode\c#\danci\obj\Debug\netcoreapp3.1\danci.csprojAssemblyReference.cache
+D:\vscode\c#\danci\obj\Debug\netcoreapp3.1\danci.AssemblyInfoInputs.cache
+D:\vscode\c#\danci\obj\Debug\netcoreapp3.1\danci.AssemblyInfo.cs
+D:\vscode\c#\danci\bin\Debug\netcoreapp3.1\danci.exe
+D:\vscode\c#\danci\bin\Debug\netcoreapp3.1\danci.deps.json
+D:\vscode\c#\danci\bin\Debug\netcoreapp3.1\danci.runtimeconfig.json
+D:\vscode\c#\danci\bin\Debug\netcoreapp3.1\danci.runtimeconfig.dev.json
+D:\vscode\c#\danci\bin\Debug\netcoreapp3.1\danci.dll
+D:\vscode\c#\danci\bin\Debug\netcoreapp3.1\danci.pdb
+D:\vscode\c#\danci\obj\Debug\netcoreapp3.1\danci.dll
+D:\vscode\c#\danci\obj\Debug\netcoreapp3.1\danci.pdb
