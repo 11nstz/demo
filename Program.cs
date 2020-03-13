@@ -16,7 +16,7 @@ namespace danci
         }
         private void duqu()
         {    string url3= Console.ReadLine();
-             string url1 =@"D:\vscode\c#\danci\dcb\";
+             string url1 =@".\dcb\";
             string url2 = ".txt";
             url1=url1+url3+url2;
             StreamReader reader = new StreamReader(url1,Encoding.Unicode);
