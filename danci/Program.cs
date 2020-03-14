@@ -10,10 +10,16 @@ using System;
         StreamReader reader = new StreamReader(url1,Encoding.Unicode);
         string line ;
         bool point = true;
-        while((line = reader.ReadLine()) != null && point)
-        { Console.WriteLine(line);
-        string s=Console.ReadLine();
-          if (s =="t" ){point=false;}
+        Console.WriteLine("从第几个开始？");
+        int star =(int)Console.Read()*2-1;
+        int number =0;
+        while((line = reader.ReadLine()) != null && point  )
+        { number+=1;
+        if(number >=star)
+               {Console.WriteLine(line);
+                string s=Console.ReadLine();
+                if (s =="t" ){point=false;}
+               }
           }
         }
         
