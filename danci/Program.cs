@@ -9,7 +9,7 @@ using System;
         { 
         star : 
        try{
-        Console.WriteLine("hello 郑俊豪,请输入想背的单词表，回车继续，t退出");
+        Console.WriteLine("hello 郑俊豪,请输入想背的单词表，回车继续，t退出\nz转换到其他字母表");
         string url1=@".\dcb\"+Console.ReadLine()+".txt";
         StreamReader reader = new StreamReader(url1,Encoding.Unicode);
         string line ;
