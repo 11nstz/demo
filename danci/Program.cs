@@ -45,7 +45,7 @@ namespace duqu
                         StreamReader r = new StreamReader(@"./help.txt", Encoding.UTF8);
                         string s = r.ReadToEnd();
                         Console.WriteLine(s);
-
+                        point =1;
                     }
                 }
             }
