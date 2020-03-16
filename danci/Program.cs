@@ -37,7 +37,7 @@ namespace duqu
             {
                 number += 1;
                 if (number >= star)
-                {
+                {   
                     Console.WriteLine(line + " " + (number + 1) / 2);//标记当前位置并输出
                     checkinput(ref point);
                     if (point == (int)chec.帮助)//输出操作列表
@@ -49,6 +49,7 @@ namespace duqu
                     }
                 }
             }
+            if(point==1){Console.WriteLine("没有这么多单词了");}
             switch (point)
             {
                 case (int)chec.跳转: break;
