@@ -7,54 +7,83 @@ namespace duqu
     {
         static void Main()
         {
-            meth m1 = new meth();
-            while()
+            method m1 = new method();
+            int key = 0;//判断是否循环
+            while (key == 0)//建立循环
             {
-            Console.WriteLine("hello 郑俊豪,请输入想背的单词表，回车继续，t退出\nz转换到其他字母表");
-            StreamReader reader = new StreamReader(m1.geturl(), Encoding.Unicode);
-            m1.outputword(reader);
+                Console.WriteLine("hello 郑俊豪,请输入想背的单词表");
+                try{StreamReader reader = new StreamReader(m1.geturl(), Encoding.Unicode);
+                m1.outputword(reader, ref key);
+                reader.Close();}
+                catch{Console.WriteLine("发生错误，请重新输入，注意检查");}
             }
         }
-        class meth
+    }
+    class method
+    {
+        public string geturl()//获取单词表url
         {
-            public string geturl()
+            string url1 = @".\dcb\" + Console.ReadLine() + ".txt";//获取字母表
+            return url1;
+        }
+        public void outputword(StreamReader a, ref int key)//输出单词
+        {
+            string line;//缓存字符
+            int point = 1;//表示是否退出
+            Console.WriteLine("从第几个开始？");
+            int star = int.Parse(Console.ReadLine()) * 2 - 1;//换算第几个单词开始
+            int number = 0;//记录当前读取位置
+            while ((line = a.ReadLine()) != null && point == 1)
             {
-                string url1 = @".\dcb\" + Console.ReadLine() + ".txt";//获取字母表
-                return url1;
-            }
-            public void outputword(StreamReader a)
-            {
-                string line;//缓存字符
-                bool point = true;//表示是否退出
-                Console.WriteLine("从第几个开始？");
-                int star = int.Parse(Console.ReadLine()) * 2 - 1;//换算第几个单词开始
-                int number = 0;//记录当前读取位置
-                while ((line = a.ReadLine()) != null && point)
+                number += 1;
+                if (number >= star)
                 {
-                    number += 1;
-                    if (number >= star)
+                    Console.WriteLine(line + " " + (number + 1) / 2);//标记当前位置并输出
+                    checkinput(ref point);
+                    if (point == (int)chec.帮助)//输出操作列表
                     {
-                        Console.WriteLine(line + " " + (number + 1) / 2);//标记当前位置并输出
-                        string s = Console.ReadLine();
-                        if (s == "t") { point = false; }//接受退出信息
-                        else if (s == "z") {  }//接受换表信息
+                        StreamReader r = new StreamReader(@"./help.txt", Encoding.UTF8);
+                        string s = r.ReadToEnd();
+                        Console.WriteLine(s);
+
                     }
                 }
             }
-            private string checkinput(){}
+            switch (point)
+            {
+                case (int)chec.跳转: break;
+                case (int)chec.退出: key = 1; break;
+            }
+
+
         }
-
-
-
-
-
-
+        void checkinput(ref int point)
+        {
+            string s = Console.ReadLine();
+            switch (s)
+            {
+                case "t":
+                    point = (int)chec.退出;
+                    break;
+                case "z": point = (int)chec.跳转; break;
+                case "help": point = (int)chec.帮助; break;
+                default: point = (int)chec.继续; break;
+            }
+        }//检查输入字符并进行操作
     }
-
-
-
-
-
-
-
+    enum chec
+    {
+        继续 = 1,
+        退出 = 2,
+        跳转 = 3,
+        帮助 = 4,
+    }
 }
+
+
+
+
+
+
+
+
