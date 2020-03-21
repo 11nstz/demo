@@ -1,0 +1,33 @@
+using System.IO;
+using System.Text;
+using System;
+namespace change
+{
+    class a
+    {
+      static void Main()
+        {
+            StreamReader reader = new StreamReader(@"E:\all.txt", Encoding.Unicode);
+            StreamWriter writer = new StreamWriter(@"D:\all.txt", true, Encoding.Unicode);
+            string line;
+            while ((line=reader.ReadLine())!= null)
+            {   int b = 0;
+                int number = 0;
+                foreach (char a in line)
+                {
+                    b++;
+                    if((a>=0x61 && a<=0x7a)||(a>=0x41&&a<=0x5a)){number++;}
+                    if(a>=0x4e00 && a<=0x9fbb &&number>0){ 
+                        string s = line.Substring(b-3, line.Length - b+1);
+                        writer.WriteLine(line.Substring(0,b-5));
+                        writer.WriteLine(line.Substring(b-3, line.Length - b+1));
+                        break;
+                    }
+                }
+            }
+        }
+
+    }
+
+
+}

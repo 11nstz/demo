@@ -1,0 +1,34 @@
+using System.IO;
+using System.Text;
+using System;
+namespace change
+{
+    class a
+    {
+       public void change()
+        {
+            StreamReader reader = new StreamReader(@"D:\ylq\luanxu.txt", Encoding.UTF8);
+            StreamWriter writer = new StreamWriter(@"D:\all.txt", true, Encoding.UTF8);
+            string line;
+           
+            while ((line=reader.ReadLine())!= null)
+            { int b = 0;
+              int num = 0;
+                foreach (char a in line)
+                {
+                    b++;
+                    
+                    if(a == ' '){
+                        writer.WriteLine(line.Substring(0,b));
+                        writer.WriteLine(line.Substring(b - 1, line.Length - b+1));
+                    }
+                }
+            }
+        }
+
+    }
+
+
+}
+
+
