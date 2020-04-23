@@ -1,0 +1,37 @@
+using OfficeOpenXml;
+using System.IO;
+using System.Text;
+namespace excel
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            FileInfo newFile1 = new FileInfo(@"D:\vscode\excel\all.xlsx");
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage package = new ExcelPackage(newFile1))
+            {
+                ExcelWorkbook workbook = package.Workbook;
+                int sheet = 0;
+                int all_hang = 1;
+                ExcelWorksheet worksheet1 = (ExcelWorksheet)workbook.Worksheets["all"];
+                for (char i = 'a'; i <= 'z'; i++)
+                {
+                    ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[sheet];
+                    int hang = 1;
+                    while (worksheet.Cells[hang,1].Value!=null && worksheet.Cells[hang,1].ToString()!="" )
+                    { 
+    
+                        worksheet1.Cells[all_hang, 1].Value =  worksheet.Cells[hang, 1].Value;
+                        worksheet1.Cells[all_hang, 2].Value = worksheet.Cells[hang, 2].Value;
+                        all_hang++;
+                        hang++;
+                    }
+                    sheet += 1;
+                }
+                package.Save();
+            }
+
+        }
+    }
+}

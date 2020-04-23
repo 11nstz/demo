@@ -1,0 +1,17 @@
+using OfficeOpenXml;
+
+
+
+
+        FileInfo newFile = new FileInfo(@"D:\vscode\excel\new.xlsx");
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;//标识符
+        using (ExcelPackage package = new ExcelPackage(newFile))
+            {   
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.First();
+                code........... 
+                package.Save();
+            }    
+             Workbook-> worksheet/Worksheets ->cell
+             cell{
+                 vaule 单元格的值
+             }

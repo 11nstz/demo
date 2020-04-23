@@ -1,0 +1,37 @@
+using OfficeOpenXml;
+using System.IO;
+using System.Text;
+namespace excel
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            FileInfo newFile1 = new FileInfo(@"D:\vscode\excel\new.xlsx");
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage package = new ExcelPackage(newFile1))
+            {
+                ExcelWorkbook workbook = package.Workbook;
+                int sheet = 1;
+                for (char i = 'a'; i <= 'z'; i++)
+                {
+                    string url = @"./dcb/" + i.ToString() + ".txt";
+                    StreamReader reader = new StreamReader(url, Encoding.Unicode);
+                    string line;
+                    double hang = 0.4;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        hang += 0.5;
+                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[sheet];
+                        worksheet.Cells[(int)hang, 1].Value = line;
+                        line = reader.ReadLine();
+                        worksheet.Cells[(int)hang, 2].Value = line;
+                    }
+                    sheet += 1;
+                }
+                package.Save();//保存文件，别删了
+            }
+
+        }
+    }
+}

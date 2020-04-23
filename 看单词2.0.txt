@@ -1,0 +1,209 @@
+using System.IO;
+using System.Text;
+using System;
+using OfficeOpenXml;
+using System.Linq;
+namespace duqu
+{
+    class duqu
+    {
+        static void Main()
+        {
+            method m1 = new method();
+            int key = 0;//判断是否循环
+            while (key == 0)//建立循环
+            {
+                string mode = null;
+                Console.WriteLine("随机还是顺序？，随机s，顺序d");
+                mode = Console.ReadLine();
+                switch (mode)
+                {
+                    case "d":
+                        {
+
+                            try
+                            {
+                                FileInfo newFile1 = new FileInfo(@".\all.xlsx");
+                                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                                ExcelPackage package = new ExcelPackage(newFile1);
+                                m1.outputword(package, ref key);
+                                package.Save();
+                            }
+                            catch { Console.WriteLine("发生错误，请重新输入，注意检查"); }
+                            break;
+                        }
+                    case "s":
+                        {
+                            try
+                            {
+                                FileInfo newFile1 = new FileInfo(@".\all.xlsx");
+                                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                                ExcelPackage package = new ExcelPackage(newFile1);
+                                ExcelWorkbook workbook = (ExcelWorkbook)package.Workbook;
+                                ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[1];
+                                Console.WriteLine("几个？");
+                                int sum = int.Parse(Console.ReadLine());
+                                int[] number = new int[sum];
+                                string s = worksheet.Cells[1, 1].ToText();
+                                int n = int.Parse(s.Substring(0, s.Length - 1));
+                                m1.creatrandom(ref number, n);
+                                m1.randomword(package, number, ref key);
+                                package.Save();
+                            }
+                            catch
+                            {
+                                Console.WriteLine("发生错误，请重新输入，注意检查");
+                            }
+                            break;
+                        }
+                }
+            }
+        }
+    }
+    class method
+    {
+        public string geturl()//获取单词表url
+        {
+            string url1 = @".\dcb\" + Console.ReadLine() + ".txt";//获取字母表
+            return url1;
+        }
+        public void outputword(ExcelPackage package, ref int key)//输出固定单词表
+        {
+            ExcelWorkbook workbook = (ExcelWorkbook)package.Workbook;
+            ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
+            int point = 1;//表示是否退出
+            Console.WriteLine("从第几个开始？");
+            int star = int.Parse(Console.ReadLine());//第几个单词开始
+            while (worksheet.Cells[star, 1].Value != null && point == 1)
+            {
+                Console.WriteLine(worksheet.Cells[star, 1].Value + " " + star+" 难度"+worksheet.Cells[star, 3].Value);//标记当前位置并输出
+                checkinput(ref point, workbook, star);
+                if (point == (int)chec.继续)
+                {
+                    Console.WriteLine(worksheet.Cells[star, 2].Value + " " + star);
+                    star++;
+                    checkinput(ref point, workbook, star);
+                }
+
+            }
+            if (point == 1) { Console.WriteLine("没有这么多单词了"); }
+            switch (point)
+            {
+                case (int)chec.跳转: break;
+                case (int)chec.退出: key = 1; break;
+            }
+
+
+        }
+        public void randomword(ExcelPackage package, int[] shunxu, ref int key)//输出随机单词
+        {
+            ExcelWorkbook workbook = package.Workbook;
+            ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
+            int point = 1;//表示是否退出
+            int biaohao = 0;// 记录数组下标
+            while (point == 1 && biaohao < shunxu.Length)
+            {
+                int a = shunxu[biaohao];
+                Console.WriteLine(worksheet.Cells[a, 1].Value + " " + (biaohao + 1)+" 难度"+worksheet.Cells[a, 3].Value);//标记当前位置并输出
+                checkinput(ref point, workbook, a);
+                if (point == (int)chec.继续)
+                {
+                    Console.WriteLine(worksheet.Cells[a, 2].Value + " " + (biaohao + 1));
+                    checkinput(ref point, workbook, a);
+                }
+                biaohao++;
+            }
+            if (point == 1) { Console.WriteLine("没有这么多单词了"); }
+            switch (point)
+            {
+                case (int)chec.跳转: break;
+                case (int)chec.退出: key = 1; break;
+            }
+
+
+        }
+        public void creatrandom(ref int[] a, int number)//创建读取的单词序号
+        {
+            int leng = a.Length;
+            Random r = new Random();
+            a[0] = (int)r.Next(1, number);
+            for (int i = 1; i < leng; i++)
+            {
+                int tool = (int)r.Next(1, number);
+                bool flag = false;
+                foreach (int k in a)//去重
+                {
+                    if (tool == k) { flag = true; break; }
+                }
+                if (flag) i--;
+                else a[i] = tool;
+            }
+
+        }
+        void checkinput(ref int point, ExcelWorkbook workbook, int danciwhere)//检测输入操作
+        {
+            string s = Console.ReadLine();
+            switch (s)
+            {
+                case "t":
+                    point = (int)chec.退出;
+                    break;
+                case "z": point = (int)chec.跳转; break;
+                case "help":
+                    {
+                        StreamReader r = new StreamReader(@"./help.txt", Encoding.UTF8);
+                        string l = r.ReadToEnd();
+                        Console.WriteLine(l);
+                        point = 1;
+                        r.Close();
+                        checkinput(ref point, workbook, danciwhere);
+                        break;
+                    }
+                case "add":
+                    {
+                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
+                        ExcelWorksheet worksheet1 = (ExcelWorksheet)workbook.Worksheets[1];
+                        string number = worksheet1.Cells[1, 1].ToText();
+                        int position = int.Parse(number.Substring(0, number.Length - 1));
+                        Console.WriteLine("单词");
+                        worksheet.Cells[position + 1, 1].Value = Console.ReadLine();
+                        worksheet.Cells[position + 1, 3].Value = 5;
+                        Console.WriteLine("意思");
+                        worksheet.Cells[position + 1, 2].Value = Console.ReadLine();
+                        Console.WriteLine("添加完毕,在程序正常关闭后生效（不要按右上，按t）");
+                        position++;
+                        worksheet1.Cells[1, 1].Value = position.ToString();
+                        checkinput(ref point, workbook, danciwhere);
+                    }
+                    break;
+                case "problem":
+                    {
+                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
+                        string tool1 = worksheet.Cells[danciwhere,3].ToText();
+                        int tool2 = int.Parse(tool1.Substring(0, tool1.Length - 1));
+                        tool2++;
+                        worksheet.Cells[danciwhere, 3].Value = tool2.ToString();
+                    }
+                    break;
+                case "save":
+                    {
+                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
+                        string tool1 = worksheet.Cells[danciwhere, 3].ToText();
+                        int tool2 = int.Parse(tool1.Substring(0, tool1.Length - 1));
+                        tool2--;
+                        if (tool2 < 0) { tool2 = 0; }
+                        worksheet.Cells[danciwhere, 3].Value = tool2.ToString();
+                    }
+                    break;
+                default: point = (int)chec.继续; break;
+            }
+        }//检查输入字符并进行操作
+    }
+    enum chec//操作
+    {
+        继续 = 1,
+        退出 = 2,
+        跳转 = 3,
+
+    }
+}
