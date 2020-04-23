@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Text;
 using System;
 using OfficeOpenXml;
@@ -44,11 +44,11 @@ namespace duqu
                                 Console.WriteLine("几个？");
                                 int sum = int.Parse(Console.ReadLine());
                                 int[] number = new int[sum];
-                               string s = worksheet.Cells[1, 1].ToText();
-                                int n = int.Parse(s.Substring(0, s.Length -1));
+                                string s = worksheet.Cells[1, 1].ToText();
+                                int n = int.Parse(s.Substring(0, s.Length - 1));
                                 m1.creatrandom(ref number, n);
                                 m1.randomword(package, number, ref key);
-
+                                package.Save();
                             }
                             catch
                             {
@@ -76,13 +76,13 @@ namespace duqu
             int star = int.Parse(Console.ReadLine());//第几个单词开始
             while (worksheet.Cells[star, 1].Value != null && point == 1)
             {
-                Console.WriteLine(worksheet.Cells[star, 1].Value + " " + star);//标记当前位置并输出
-                checkinput(ref point);
+                Console.WriteLine(worksheet.Cells[star, 1].Value + " " + star+" 难度"+worksheet.Cells[star, 3].Value);//标记当前位置并输出
+                checkinput(ref point, workbook, star);
                 if (point == (int)chec.继续)
                 {
                     Console.WriteLine(worksheet.Cells[star, 2].Value + " " + star);
                     star++;
-                    checkinput(ref point);
+                    checkinput(ref point, workbook, star);
                 }
 
             }
@@ -104,12 +104,12 @@ namespace duqu
             while (point == 1 && biaohao < shunxu.Length)
             {
                 int a = shunxu[biaohao];
-                Console.WriteLine(worksheet.Cells[a, 1].Value + " " + (biaohao + 1));//标记当前位置并输出
-                checkinput(ref point);
+                Console.WriteLine(worksheet.Cells[a, 1].Value + " " + (biaohao + 1)+" 难度"+worksheet.Cells[a, 3].Value);//标记当前位置并输出
+                checkinput(ref point, workbook, a);
                 if (point == (int)chec.继续)
                 {
                     Console.WriteLine(worksheet.Cells[a, 2].Value + " " + (biaohao + 1));
-                    checkinput(ref point);
+                    checkinput(ref point, workbook, a);
                 }
                 biaohao++;
             }
@@ -121,26 +121,26 @@ namespace duqu
             }
 
 
-
         }
         public void creatrandom(ref int[] a, int number)//创建读取的单词序号
         {
             int leng = a.Length;
             Random r = new Random();
-            a[0]= (int)r.Next(1, number);
+            a[0] = (int)r.Next(1, number);
             for (int i = 1; i < leng; i++)
-            {   int tool= (int)r.Next(1, number);
+            {
+                int tool = (int)r.Next(1, number);
                 bool flag = false;
-                foreach(int k in a)//去重
+                foreach (int k in a)//去重
                 {
-                    if(tool == k ){flag=true;break;}
+                    if (tool == k) { flag = true; break; }
                 }
-              if(flag) i--;
-              else a[i]=tool;   
+                if (flag) i--;
+                else a[i] = tool;
             }
 
         }
-        void checkinput(ref int point)//检测输入操作
+        void checkinput(ref int point, ExcelWorkbook workbook, int danciwhere)//检测输入操作
         {
             string s = Console.ReadLine();
             switch (s)
@@ -156,9 +156,45 @@ namespace duqu
                         Console.WriteLine(l);
                         point = 1;
                         r.Close();
-                        checkinput(ref point);
+                        checkinput(ref point, workbook, danciwhere);
                         break;
                     }
+                case "add":
+                    {
+                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
+                        ExcelWorksheet worksheet1 = (ExcelWorksheet)workbook.Worksheets[1];
+                        string number = worksheet1.Cells[1, 1].ToText();
+                        int position = int.Parse(number.Substring(0, number.Length - 1));
+                        Console.WriteLine("单词");
+                        worksheet.Cells[position + 1, 1].Value = Console.ReadLine();
+                        worksheet.Cells[position + 1, 3].Value = 5;
+                        Console.WriteLine("意思");
+                        worksheet.Cells[position + 1, 2].Value = Console.ReadLine();
+                        Console.WriteLine("添加完毕,在程序正常关闭后生效（不要按右上，按t）");
+                        position++;
+                        worksheet1.Cells[1, 1].Value = position.ToString();
+                        checkinput(ref point, workbook, danciwhere);
+                    }
+                    break;
+                case "problem":
+                    {
+                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
+                        string tool1 = worksheet.Cells[danciwhere,3].ToText();
+                        int tool2 = int.Parse(tool1.Substring(0, tool1.Length - 1));
+                        tool2++;
+                        worksheet.Cells[danciwhere, 3].Value = tool2.ToString();
+                    }
+                    break;
+                case "save":
+                    {
+                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
+                        string tool1 = worksheet.Cells[danciwhere, 3].ToText();
+                        int tool2 = int.Parse(tool1.Substring(0, tool1.Length - 1));
+                        tool2--;
+                        if (tool2 < 0) { tool2 = 0; }
+                        worksheet.Cells[danciwhere, 3].Value = tool2.ToString();
+                    }
+                    break;
                 default: point = (int)chec.继续; break;
             }
         }//检查输入字符并进行操作
@@ -168,6 +204,6 @@ namespace duqu
         继续 = 1,
         退出 = 2,
         跳转 = 3,
-        帮助 = 4,
+
     }
 }
