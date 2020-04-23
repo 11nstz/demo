@@ -1,7 +1,8 @@
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System;
 using OfficeOpenXml;
+using System.Linq;
 namespace duqu
 {
     class duqu
@@ -126,11 +127,16 @@ namespace duqu
         {
             int leng = a.Length;
             Random r = new Random();
-
-            for (int i = 0; i < leng; i++)
-            {
-                a[i] = (int)r.Next(1, number);
-
+            a[0]= (int)r.Next(1, number);
+            for (int i = 1; i < leng; i++)
+            {   int tool= (int)r.Next(1, number);
+                bool flag = false;
+                foreach(int k in a)//去重
+                {
+                    if(tool == k ){flag=true;break;}
+                }
+              if(flag) i--;
+              else a[i]=tool;   
             }
 
         }
@@ -147,9 +153,10 @@ namespace duqu
                     {
                         StreamReader r = new StreamReader(@"./help.txt", Encoding.UTF8);
                         string l = r.ReadToEnd();
-                        Console.WriteLine(s);
+                        Console.WriteLine(l);
                         point = 1;
                         r.Close();
+                        checkinput(ref point);
                         break;
                     }
                 default: point = (int)chec.继续; break;
