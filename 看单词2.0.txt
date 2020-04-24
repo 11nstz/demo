@@ -14,7 +14,7 @@ namespace duqu
             while (key == 0)//建立循环
             {
                 string mode = null;
-                Console.WriteLine("随机还是顺序？，随机s，顺序d");
+                Console.WriteLine("随机还是顺序？，随机s，顺序d,退出t");
                 mode = Console.ReadLine();
                 switch (mode)
                 {
@@ -23,7 +23,7 @@ namespace duqu
 
                             try
                             {
-                                FileInfo newFile1 = new FileInfo(@".\all.xlsx");
+                                FileInfo newFile1 = new FileInfo(@"./data/all.xlsx");
                                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                                 ExcelPackage package = new ExcelPackage(newFile1);
                                 m1.outputword(package, ref key);
@@ -36,7 +36,7 @@ namespace duqu
                         {
                             try
                             {
-                                FileInfo newFile1 = new FileInfo(@".\all.xlsx");
+                                FileInfo newFile1 = new FileInfo(@"./data/all.xlsx");
                                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                                 ExcelPackage package = new ExcelPackage(newFile1);
                                 ExcelWorkbook workbook = (ExcelWorkbook)package.Workbook;
@@ -56,6 +56,9 @@ namespace duqu
                             }
                             break;
                         }
+                    case "t":
+                    key =1;
+                    break;
                 }
             }
         }
@@ -151,7 +154,7 @@ namespace duqu
                 case "z": point = (int)chec.跳转; break;
                 case "help":
                     {
-                        StreamReader r = new StreamReader(@"./help.txt", Encoding.UTF8);
+                        StreamReader r = new StreamReader(@"./data/help.txt", Encoding.UTF8);
                         string l = r.ReadToEnd();
                         Console.WriteLine(l);
                         point = 1;
