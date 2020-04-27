@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System;
 using OfficeOpenXml;
@@ -55,7 +55,14 @@ namespace duqu
                             }
                             break;
                         }
-                    case "t":
+                        case "help":
+                        {StreamReader r = new StreamReader(@"./data/help.txt", Encoding.UTF8);
+                        string l = r.ReadToEnd();
+                        Console.WriteLine(l);
+                        r.Close();
+                        }
+                        break;
+                        case "t":
                         key = 1;
                         break;
                 }
