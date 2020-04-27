@@ -8,7 +8,15 @@ namespace duqu
     {
         static void Main()
         {
-            method m1 = new method();
+            FileInfo newFile1 = new FileInfo(@"./data/all.xlsx");
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            ExcelPackage package = new ExcelPackage(newFile1);//创建包
+            ExcelWorkbook workbook = (ExcelWorkbook)package.Workbook;
+            ExcelWorksheet worksheet0 = (ExcelWorksheet)workbook.Worksheets[0];
+            ExcelWorksheet worksheet1 = (ExcelWorksheet)workbook.Worksheets[1];
+
+            method m1 = new method(worksheet0, worksheet1);
             int key = 0;//判断是否循环
             while (key == 0)//建立循环
             {
@@ -22,32 +30,7 @@ namespace duqu
 
                             try
                             {
-                                FileInfo newFile1 = new FileInfo(@"./data/all.xlsx");
-                                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                                ExcelPackage package = new ExcelPackage(newFile1);
-                                m1.outputword(package, ref key);
-                                package.Save();
-                            }
-                            catch { Console.WriteLine("发生错误，请重新输入，注意检查"); }
-                            break;
-                        }
-                    case "s":
-                        {
-                            try
-                            {
-                                FileInfo newFile1 = new FileInfo(@"./data/all.xlsx");
-                                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                                ExcelPackage package = new ExcelPackage(newFile1);
-                                ExcelWorkbook workbook = (ExcelWorkbook)package.Workbook;
-                                ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[1];
-                                Console.WriteLine("几个？");
-                                int sum = int.Parse(Console.ReadLine());
-                                int[] number = new int[sum];
-                                string s = worksheet.Cells[1, 1].ToText();
-                                int n = int.Parse(s.Substring(0, s.Length - 1));
-                                m1.creatrandom(ref number, n);
-                                m1.randomword(package, number, ref key);
-                                package.Save();
+                                m1.outputword(ref key);
                             }
                             catch
                             {
@@ -55,42 +38,61 @@ namespace duqu
                             }
                             break;
                         }
-                        case "help":
-                        {StreamReader r = new StreamReader(@"./data/help.txt", Encoding.UTF8);
-                        string l = r.ReadToEnd();
-                        Console.WriteLine(l);
-                        r.Close();
+                    case "s":
+                        {
+                            try
+                            {
+                                Console.WriteLine("几个？");
+                                int[] number = new int[int.Parse(Console.ReadLine())];//获取要输出的单词个数
+                                string s = worksheet1.Cells[1, 1].ToText();//获取单词总个数
+                                m1.creatrandom(ref number, int.Parse(s.Substring(0, s.Length - 1)));//创建随机单词的序号
+                                m1.randomword(number, ref key);//输出随机单词
+                            }
+                            catch
+                            {
+                                Console.WriteLine("发生错误，请重新输入，注意检查");
+                            }
+                            break;
+                        }
+                    case "help":
+                        {
+                            StreamReader r = new StreamReader(@"./data/help.txt", Encoding.UTF8);
+                            string l = r.ReadToEnd();
+                            Console.WriteLine(l);
+                            r.Close();
                         }
                         break;
-                        case "t":
+                    case "t":
                         key = 1;
                         break;
                 }
             }
+            package.Save();
         }
     }
     class method
     {
-        public string geturl()//获取单词表url
+        mean changword;
+        ExcelWorksheet worksheet0, worksheet1;
+        public method(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1)
         {
-            string url1 = @".\dcb\" + Console.ReadLine() + ".txt";//获取字母表
-            return url1;
+            this.worksheet0 = worksheet0;
+            this.worksheet1 = worksheet1;
+            changword = new mean(worksheet0, worksheet1);
         }
-        public void outputword(ExcelPackage package, ref int key)//输出固定单词表
+        public void outputword(ref int key)//输出固定单词表
         {
-            ExcelWorkbook workbook = (ExcelWorkbook)package.Workbook;
-            ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
             int point = 1;//表示是否退出
             Console.WriteLine("从第几个开始？");
             int star = int.Parse(Console.ReadLine());//第几个单词开始
-            while (worksheet.Cells[star, 1].Value != null && point == 1)
+            while (worksheet0.Cells[star, 1].Value != null && point == 1)
             {
-                Console.WriteLine(worksheet.Cells[star, 1].Value + " " + star + " 难度" + worksheet.Cells[star, 3].Value);//标记当前位置并输出
-                checkinput(ref point, workbook, star);
+                Console.WriteLine(worksheet0.Cells[star, 1].Value + " " + star + " 难度" + worksheet0.Cells[star, 3].Value);//标记当前位置并输出
+                checkinput(ref point, star);
                 if (point == (int)chec.继续)
                 {
-                    Console.WriteLine(worksheet.Cells[star, 2].Value + " " + star);
-                    checkinput(ref point, workbook, star);
+                    Console.WriteLine(worksheet0.Cells[star, 2].Value + " " + star);
+                    checkinput(ref point, star);
                     star++;
                 }
 
@@ -104,21 +106,19 @@ namespace duqu
 
 
         }
-        public void randomword(ExcelPackage package, int[] shunxu, ref int key)//输出随机单词
+        public void randomword(int[] shunxu, ref int key)//输出随机单词
         {
-            ExcelWorkbook workbook = package.Workbook;
-            ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
             int point = 1;//表示是否退出
             int biaohao = 0;// 记录数组下标
             while (point == 1 && biaohao < shunxu.Length)
             {
-                int a = shunxu[biaohao];
-                Console.WriteLine(worksheet.Cells[a, 1].Value + " " + (biaohao + 1) + " 难度" + worksheet.Cells[a, 3].Value);//标记当前位置并输出
-                checkinput(ref point, workbook, a);
+                int a = shunxu[biaohao];//提取下一个单词序号
+                Console.WriteLine(worksheet0.Cells[a, 1].Value + " " + (biaohao + 1) + " 难度" + worksheet0.Cells[a, 3].Value);//标记当前位置并输出
+                checkinput(ref point, a);
                 if (point == (int)chec.继续)
                 {
-                    Console.WriteLine(worksheet.Cells[a, 2].Value + " " + (biaohao + 1));
-                    checkinput(ref point, workbook, a);
+                    Console.WriteLine(worksheet0.Cells[a, 2].Value + " " + (biaohao + 1));
+                    checkinput(ref point, a);
                 }
                 biaohao++;
             }
@@ -149,7 +149,7 @@ namespace duqu
             }
 
         }
-        void checkinput(ref int point, ExcelWorkbook workbook, int danciwhere)//检测输入操作
+        void checkinput(ref int point, int danciwhere)//检测输入操作
         {
             string s = Console.ReadLine();
             switch (s)
@@ -165,96 +165,113 @@ namespace duqu
                         Console.WriteLine(l);
                         point = 1;
                         r.Close();
-                        checkinput(ref point, workbook, danciwhere);
+                        checkinput(ref point, danciwhere);
                         break;
                     }
                 case "addword":
                     {
-                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
-                        ExcelWorksheet worksheet1 = (ExcelWorksheet)workbook.Worksheets[1];
-                        string number = worksheet1.Cells[1, 1].ToText();
-                        int position = int.Parse(number.Substring(0, number.Length - 1));
-                        Console.WriteLine("单词");
-                        worksheet.Cells[position + 1, 1].Value = Console.ReadLine();
-                        worksheet.Cells[position + 1, 3].Value = 5;
-                        Console.WriteLine("意思");
-                        worksheet.Cells[position + 1, 2].Value = Console.ReadLine();
-                        Console.WriteLine("添加完毕,在程序正常关闭后生效（不要按右上，按t）");
-                        position++;
-                        worksheet1.Cells[1, 1].Value = position.ToString();
-                        checkinput(ref point, workbook, danciwhere);
+                        changword.addword();
+                        checkinput(ref point, danciwhere);
                     }
                     break;
                 case "problem":
                     {
-                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
-                        string tool1 = worksheet.Cells[danciwhere, 3].ToText();
+                        string tool1 = worksheet0.Cells[danciwhere, 3].ToText();
                         int tool2 = int.Parse(tool1.Substring(0, tool1.Length - 1));
                         tool2++;
-                        worksheet.Cells[danciwhere, 3].Value = tool2.ToString();
+                        worksheet0.Cells[danciwhere, 3].Value = tool2.ToString();
                     }
                     break;
                 case "save":
                     {
-                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
-                        string tool1 = worksheet.Cells[danciwhere, 3].ToText();
+
+                        string tool1 = worksheet0.Cells[danciwhere, 3].ToText();
                         int tool2 = int.Parse(tool1.Substring(0, tool1.Length - 1));
                         tool2--;
                         if (tool2 < 0) { tool2 = 0; }
-                        worksheet.Cells[danciwhere, 3].Value = tool2.ToString();
+                        worksheet0.Cells[danciwhere, 3].Value = tool2.ToString();
                     }
                     break;
                 case "addmean":
                     {
-
-                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
-                        Console.WriteLine("输入单词意思");
-                        string wordmean = Console.ReadLine();
-                        Console.WriteLine("你输入的单词意思为\t" + wordmean + "\n yes or no?");
-                        string save = Console.ReadLine();
-                        switch (save)
-                        {
-                            case "yes":
-                                worksheet.Cells[danciwhere, 2].Value = worksheet.Cells[danciwhere, 2].ToText() + wordmean;
-                                Console.WriteLine("添加完毕,在程序正常关闭后生效（不要按右上，按t）");
-                                break;
-                            case "no":
-                                Console.WriteLine("停止添加");
-                                break;
-                               default:
-                                Console.WriteLine("未确认，停止添加");
-                                break;
-                        }
-                        checkinput(ref point, workbook, danciwhere);
+                        changword.addmean(danciwhere);
+                        checkinput(ref point, danciwhere);
                     }
                     break;
                 case "changemean":
                     {
-
-                        ExcelWorksheet worksheet = (ExcelWorksheet)workbook.Worksheets[0];
-                        Console.WriteLine("输入单词意思");
-                        string wordmean = Console.ReadLine();
-                        Console.WriteLine("你输入的单词意思为\t" + wordmean + "\n" + "单词意思会被完全取代，yes or no？");
-                        string save = Console.ReadLine();
-                        switch (save)
-                        {
-                            case "yes":
-                                worksheet.Cells[danciwhere, 2].Value = wordmean;
-                                Console.WriteLine("添加完毕,在程序正常关闭后生效（不要按右上，按t）");
-                                break;
-                            case "no":
-                                Console.WriteLine("停止添加");
-                                break; 
-                               default:
-                                Console.WriteLine("未确认，停止添加");
-                                break;
-                        }
-                        checkinput(ref point, workbook, danciwhere);
+                        changword.changmean(danciwhere);
+                        checkinput(ref point, danciwhere);
                     }
                     break;
                 default: point = (int)chec.继续; break;
             }
         }//检查输入字符并进行操作
+    }
+    class mean
+    {
+        private ExcelWorksheet worksheet0;
+        private ExcelWorksheet worksheet1;
+        private int dancinumber;
+        public mean(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1)
+        {
+            this.worksheet0 = worksheet0;
+            this.worksheet1 = worksheet1;
+            string number = worksheet1.Cells[1, 1].ToText();
+            this.dancinumber = int.Parse(number.Substring(0, number.Length - 1));
+        }
+        public void addword()
+        {
+            Console.WriteLine("单词");
+            worksheet0.Cells[dancinumber + 1, 1].Value = Console.ReadLine();
+            worksheet0.Cells[dancinumber + 1, 3].Value = 5;
+            Console.WriteLine("意思");
+            worksheet0.Cells[dancinumber + 1, 2].Value = Console.ReadLine();
+            Console.WriteLine("添加完毕,在程序正常关闭后生效（不要按右上，按t）");
+            dancinumber++;
+            worksheet1.Cells[1, 1].Value = dancinumber;
+        }
+        public void addmean(int danciwhere)
+        {
+            Console.WriteLine("输入单词意思");
+            string wordmean = Console.ReadLine();
+            Console.WriteLine("你输入的单词意思为\t" + wordmean + "\n yes or no?");
+            string save = Console.ReadLine();
+            switch (save)
+            {
+                case "yes":
+                    worksheet0.Cells[danciwhere, 2].Value = worksheet0.Cells[danciwhere, 2].ToText() + wordmean;
+                    Console.WriteLine("添加完毕,在程序正常关闭后生效（不要按右上，按t）");
+                    break;
+                case "no":
+                    Console.WriteLine("停止添加");
+                    break;
+                default:
+                    Console.WriteLine("未确认，停止添加");
+                    break;
+            }
+        }
+        public void changmean(int danciwhere)
+        {
+            Console.WriteLine("输入单词意思");
+            string wordmean = Console.ReadLine();
+            Console.WriteLine("你输入的单词意思为\t" + wordmean + "\n" + "单词意思会被完全取代，yes or no？");
+            string save = Console.ReadLine();
+            switch (save)
+            {
+                case "yes":
+                    worksheet0.Cells[danciwhere, 2].Value = wordmean;
+                    Console.WriteLine("添加完毕,在程序正常关闭后生效（不要按右上，按t）");
+                    break;
+                case "no":
+                    Console.WriteLine("停止添加");
+                    break;
+                default:
+                    Console.WriteLine("未确认，停止添加");
+                    break;
+            }
+
+        }
     }
     enum chec//操作
     {
