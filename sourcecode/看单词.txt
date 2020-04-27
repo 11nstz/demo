@@ -152,3 +152,4 @@ namespace duqu
         帮助 = 4,
     }
 }
+//D:\vscode\c#\microsoft.cognitiveservices.speech.nupkgdot
