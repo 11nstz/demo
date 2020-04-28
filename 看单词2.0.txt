@@ -3,11 +3,23 @@ using System.Text;
 using System;
 using OfficeOpenXml;
 namespace duqu
-{
+{  
+   class help
+    {    public static string helpword;
+        
+
+            public help()
+        {
+            StreamReader r = new StreamReader(@"./data/help.txt", Encoding.UTF8);
+            helpword=r.ReadToEnd();
+            r.Close();
+        }
+
+    }
     class duqu
     {
         static void Main()
-        {
+        {   help helpw = new help();//读取help文档
             FileInfo newFile1 = new FileInfo(@"./data/all.xlsx");
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -21,7 +33,7 @@ namespace duqu
             while (key == 0)//建立循环
             {
                 string mode = null;
-                Console.WriteLine("随机还是顺序？，随机s，顺序d,退出t");
+                Console.WriteLine(help.helpword);
                 mode = Console.ReadLine();
                 switch (mode)
                 {
@@ -56,10 +68,7 @@ namespace duqu
                         }
                     case "help":
                         {
-                            StreamReader r = new StreamReader(@"./data/help.txt", Encoding.UTF8);
-                            string l = r.ReadToEnd();
-                            Console.WriteLine(l);
-                            r.Close();
+                            Console.WriteLine(help.helpword);
                         }
                         break;
                     case "t":
@@ -160,11 +169,7 @@ namespace duqu
                 case "z": point = (int)chec.跳转; break;
                 case "help":
                     {
-                        StreamReader r = new StreamReader(@"./data/help.txt", Encoding.UTF8);
-                        string l = r.ReadToEnd();
-                        Console.WriteLine(l);
-                        point = 1;
-                        r.Close();
+                        Console.WriteLine(help.helpword);
                         checkinput(ref point, danciwhere);
                         break;
                     }
