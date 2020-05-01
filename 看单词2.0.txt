@@ -2,6 +2,7 @@
 using System.Text;
 using System;
 using OfficeOpenXml;
+using excel;
 namespace duqu
 {  
    class help
@@ -27,7 +28,6 @@ namespace duqu
             ExcelWorkbook workbook = (ExcelWorkbook)package.Workbook;
             ExcelWorksheet worksheet0 = (ExcelWorksheet)workbook.Worksheets[0];
             ExcelWorksheet worksheet1 = (ExcelWorksheet)workbook.Worksheets[1];
-
             method m1 = new method(worksheet0, worksheet1);
             int key = 0;//判断是否循环
             while (key == 0)//建立循环
@@ -163,23 +163,24 @@ namespace duqu
             string s = Console.ReadLine();
             switch (s)
             {
-                case "t":
+                case "t": //退出程序
                     point = (int)chec.退出;
                     break;
-                case "z": point = (int)chec.跳转; break;
-                case "help":
+                case "z": //跳转至开头
+                        point = (int)chec.跳转; break;
+                case "help"://查看help文档
                     {
                         Console.WriteLine(help.helpword);
                         checkinput(ref point, danciwhere);
                         break;
                     }
-                case "addword":
+                case "addword"://增加单词
                     {
                         changword.addword();
                         checkinput(ref point, danciwhere);
                     }
                     break;
-                case "problem":
+                case "problem"://增加难度值
                     {
                         string tool1 = worksheet0.Cells[danciwhere, 3].ToText();
                         int tool2 = int.Parse(tool1.Substring(0, tool1.Length - 1));
@@ -187,7 +188,7 @@ namespace duqu
                         worksheet0.Cells[danciwhere, 3].Value = tool2.ToString();
                     }
                     break;
-                case "save":
+                case "save"://降低难度值
                     {
 
                         string tool1 = worksheet0.Cells[danciwhere, 3].ToText();
@@ -197,18 +198,24 @@ namespace duqu
                         worksheet0.Cells[danciwhere, 3].Value = tool2.ToString();
                     }
                     break;
-                case "addmean":
+                case "addmean"://补充单词意思
                     {
                         changword.addmean(danciwhere);
                         checkinput(ref point, danciwhere);
                     }
                     break;
-                case "changemean":
+                case "changemean"://改变单词意思
                     {
                         changword.changmean(danciwhere);
                         checkinput(ref point, danciwhere);
                     }
                     break;
+                case "find": //查找单词意思
+                { 
+                     changword.findwordmean();
+                      checkinput(ref point, danciwhere);
+                }
+                break;
                 default: point = (int)chec.继续; break;
             }
         }//检查输入字符并进行操作
@@ -274,6 +281,31 @@ namespace duqu
                 default:
                     Console.WriteLine("未确认，停止添加");
                     break;
+            }
+
+        }
+        public void findwordmean()
+        {
+            wordfind w = new wordfind(worksheet0,dancinumber);
+            string input = Console.ReadLine();
+            foreach(string[] g in w)
+            {   
+                 int p = -1;
+                  foreach(char c in g[0])
+                  {
+                      if((c>=65 && c<=90)||(c>=97 && c<=122) )
+                      p++;
+                      else
+                      break;
+                  }
+                  string s = g[0].Substring(0,p+1);
+                  
+                if(s.Equals(input))
+                {  
+                    Console.WriteLine(g[1]);
+                    break;
+                }
+                
             }
 
         }

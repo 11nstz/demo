@@ -1,0 +1,61 @@
+using System.Collections;
+using OfficeOpenXml;
+namespace excel
+{
+    public class wordfind : IEnumerable
+    {
+        ExcelWorksheet worksheet0;
+        int number;
+        public wordfind(ExcelWorksheet worksheet0,int number)
+        {   this.number = number;
+            this.worksheet0 = worksheet0;
+        }
+        public IEnumerator GetEnumerator()
+        {
+            return new wordfindIE(worksheet0,number);
+        }
+    }
+    public class wordfindIE : IEnumerator
+    {
+        ExcelWorksheet worksheet0;
+        int number;
+        int star=1;
+        string[] word;
+        public wordfindIE(ExcelWorksheet worksheet0,int number)
+        { 
+            this.number=number;
+            this.worksheet0 = worksheet0;
+            word =new string[2];
+        }
+        public object Current
+        {
+            get{ return Currentword();}
+        }
+        object  Currentword ()
+        {
+          if( star > number)
+          return null;
+          else
+          {
+              word[0]=worksheet0.Cells[star,1].Text;
+              word[1]=worksheet0.Cells[star,2].Text;
+              return word;
+          }
+        }
+
+        bool IEnumerator.MoveNext()
+        {
+           star++;
+           if(star<=number && worksheet0.Cells[star,1].Value!=null)
+           return true;
+           else
+           return false;
+        }
+
+        void IEnumerator.Reset()
+        {
+            star =1;
+        }
+    }
+
+}
