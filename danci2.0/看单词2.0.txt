@@ -30,11 +30,10 @@ namespace duqu
             ExcelWorksheet worksheet1 = (ExcelWorksheet)workbook.Worksheets[1];
             method m1 = new method(worksheet0, worksheet1);
             int key = 0;//判断是否循环
+            Console.WriteLine(help.helpword);
             while (key == 0)//建立循环
-            {
-                string mode = null;
-                Console.WriteLine(help.helpword);
-                mode = Console.ReadLine();
+            {    Console.WriteLine("这里是开头");
+                string mode = Console.ReadLine();
                 switch (mode)
                 {
                     case "d":
@@ -71,8 +70,14 @@ namespace duqu
                             Console.WriteLine(help.helpword);
                         }
                         break;
-                    case "t":
+                       case "t":
                         key = 1;
+                        break;
+                       case "find": 
+                          m1.changword.findwordmean();
+                          break;
+                       case "addword":
+                       m1.changword.addword();   
                         break;
                 }
             }
@@ -81,7 +86,7 @@ namespace duqu
     }
     class method
     {
-        mean changword;
+       public mean changword;
         ExcelWorksheet worksheet0, worksheet1;
         public method(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1)
         {
@@ -219,7 +224,7 @@ namespace duqu
                 default: point = (int)chec.继续; break;
             }
         }//检查输入字符并进行操作
-    }
+     }
     class mean
     {
         private ExcelWorksheet worksheet0;
@@ -287,7 +292,9 @@ namespace duqu
         public void findwordmean()
         {
             wordfind w = new wordfind(worksheet0,dancinumber);
+            Console.WriteLine("输入单词");
             string input = Console.ReadLine();
+           bool findornot=true;
             foreach(string[] g in w)
             {   
                  int p = -1;
@@ -303,10 +310,13 @@ namespace duqu
                 if(s.Equals(input))
                 {  
                     Console.WriteLine(g[1]);
+                    findornot =false;
                     break;
                 }
-                
             }
+           if(findornot)
+           Console.WriteLine("没有找到这个单词");
+            
 
         }
     }
