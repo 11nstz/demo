@@ -6,9 +6,8 @@ using excel;
 namespace duqu
 {  
    class help
-    {    public static string helpword;
-        
-
+    {    public static string helpword;//帮助文档
+        public static int key;//判断是否循环
             public help()
         {
             StreamReader r = new StreamReader(@"./data/help.txt", Encoding.UTF8);
@@ -28,20 +27,19 @@ namespace duqu
             ExcelWorkbook workbook = (ExcelWorkbook)package.Workbook;
             ExcelWorksheet worksheet0 = (ExcelWorksheet)workbook.Worksheets[0];
             ExcelWorksheet worksheet1 = (ExcelWorksheet)workbook.Worksheets[1];
+
             method m1 = new method(worksheet0, worksheet1);
-            int key = 0;//判断是否循环
             Console.WriteLine(help.helpword);
-            while (key == 0)//建立循环
+            while (help.key == 0)//建立循环
             {    Console.WriteLine("这里是开头");
                 string mode = Console.ReadLine();
                 switch (mode)
                 {
                     case "d":
                         {
-
                             try
                             {
-                                m1.outputword(ref key);
+                                m1.outputword();
                             }
                             catch
                             {
@@ -57,7 +55,7 @@ namespace duqu
                                 int[] number = new int[int.Parse(Console.ReadLine())];//获取要输出的单词个数
                                 string s = worksheet1.Cells[1, 1].ToText();//获取单词总个数
                                 m1.creatrandom(ref number, int.Parse(s.Substring(0, s.Length - 1)));//创建随机单词的序号
-                                m1.randomword(number, ref key);//输出随机单词
+                                m1.randomword(number);//输出随机单词
                             }
                             catch
                             {
@@ -71,11 +69,11 @@ namespace duqu
                         }
                         break;
                        case "t":
-                        key = 1;
+                        help.key = 1;
                         break;
                        case "find": 
-                          m1.changword.findwordmean();
-                          break;
+                       m1.changword.findwordmean();
+                        break;
                        case "addword":
                        m1.changword.addword();   
                         break;
@@ -94,7 +92,7 @@ namespace duqu
             this.worksheet1 = worksheet1;
             changword = new mean(worksheet0, worksheet1);
         }
-        public void outputword(ref int key)//输出固定单词表
+        public void outputword()//输出固定单词表
         {
             int point = 1;//表示是否退出
             Console.WriteLine("从第几个开始？");
@@ -109,18 +107,10 @@ namespace duqu
                     checkinput(ref point, star);
                     star++;
                 }
-
             }
             if (point == 1) { Console.WriteLine("没有这么多单词了"); }
-            switch (point)
-            {
-                case (int)chec.跳转: break;
-                case (int)chec.退出: key = 1; break;
-            }
-
-
         }
-        public void randomword(int[] shunxu, ref int key)//输出随机单词
+        public void randomword(int[] shunxu)//输出随机单词
         {
             int point = 1;//表示是否退出
             int biaohao = 0;// 记录数组下标
@@ -137,13 +127,6 @@ namespace duqu
                 biaohao++;
             }
             if (point == 1) { Console.WriteLine("没有这么多单词了"); }
-            switch (point)
-            {
-                case (int)chec.跳转: break;
-                case (int)chec.退出: key = 1; break;
-            }
-
-
         }
         public void creatrandom(ref int[] a, int number)//创建读取的单词序号
         {
@@ -169,7 +152,8 @@ namespace duqu
             switch (s)
             {
                 case "t": //退出程序
-                    point = (int)chec.退出;
+                    help.key=1;
+                    point=0;
                     break;
                 case "z": //跳转至开头
                         point = (int)chec.跳转; break;
@@ -217,7 +201,7 @@ namespace duqu
                     break;
                 case "find": //查找单词意思
                 { 
-                     changword.findwordmean();
+                      changword.findwordmean();
                       checkinput(ref point, danciwhere);
                 }
                 break;
@@ -325,6 +309,5 @@ namespace duqu
         继续 = 1,
         退出 = 2,
         跳转 = 3,
-
     }
 }
