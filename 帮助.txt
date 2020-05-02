@@ -1,5 +1,5 @@
 
-2. EPPlus核心类介绍
+EPPlus核心类介绍
 2.1  ExcelPackage类
 ExcelPackage是EPPlus的入口类，解析一个Excel文件，生成ExcelWorkbook对象来表示一个Excel。该类实现了IDisposable接口，也就是说可以使用using进行对象释放。
 
