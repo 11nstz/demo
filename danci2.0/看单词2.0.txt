@@ -278,20 +278,10 @@ namespace duqu
             wordfind w = new wordfind(worksheet0,dancinumber);
             Console.WriteLine("输入单词");
             string input = Console.ReadLine();
-           bool findornot=true;
+            bool findornot=true;
             foreach(string[] g in w)
             {   
-                 int p = -1;
-                  foreach(char c in g[0])
-                  {
-                      if((c>=65 && c<=90)||(c>=97 && c<=122) )
-                      p++;
-                      else
-                      break;
-                  }
-                  string s = g[0].Substring(0,p+1);
-                  
-                if(s.Equals(input))
+                if(g[0].Equals(input))
                 {  
                     Console.WriteLine(g[1]);
                     findornot =false;
@@ -299,9 +289,22 @@ namespace duqu
                 }
             }
            if(findornot)
-           Console.WriteLine("没有找到这个单词");
-            
-
+           {Console.WriteLine("没有找到这个单词,以下为相似单词结果");
+            fuzzyfind(input,w);
+           }
+        }
+        void fuzzyfind(string word,wordfind w)
+        {   
+            double Length=word.Length;
+            double similarlv =0;
+            foreach(string[] s in w)
+            {    
+                  similarlv=new SimilarityTool().CompareStrings(word,s[0]);
+               if(similarlv>=0.7)
+               {
+                   Console.WriteLine(s[0]+"\n"+s[1]+"\n");
+               }
+            }
         }
     }
     enum chec//操作
