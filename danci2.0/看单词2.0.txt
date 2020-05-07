@@ -222,12 +222,28 @@ namespace duqu
             this.dancinumber = int.Parse(number.Substring(0, number.Length - 1));
         }
         public void addword()
-        {
+        {  string s;
+           Console.WriteLine("开始录入，输入e退出"); 
+          while(true){
             Console.WriteLine("单词");
-            worksheet0.Cells[dancinumber + 1, 1].Value = Console.ReadLine();
+            s=Console.ReadLine();
+            if(s=="e")break;
+            else{
+         worksheet0.Cells[dancinumber + 1, 1].Value = s;
             worksheet0.Cells[dancinumber + 1, 3].Value = 5;
+            }
+           inputmean:
             Console.WriteLine("意思");
-            worksheet0.Cells[dancinumber + 1, 2].Value = Console.ReadLine();
+            s=Console.ReadLine();
+            if(s=="e")
+            {Console.WriteLine("请先输入单词意思");
+             goto inputmean;
+            }
+            else{
+            worksheet0.Cells[dancinumber + 1, 2].Value = s;
+            }
+          }
+        
             Console.WriteLine("添加完毕,在程序正常关闭后生效（不要按右上，按t）");
             dancinumber++;
             worksheet1.Cells[1, 1].Value = dancinumber;
