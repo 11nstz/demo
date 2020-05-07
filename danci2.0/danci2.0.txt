@@ -4,14 +4,15 @@ using System;
 using OfficeOpenXml;
 using excel;
 namespace duqu
-{  
-   class help
-    {    public static string helpword;//帮助文档
+{
+    class help
+    {
+        public static string helpword;//帮助文档
         public static int key;//判断是否循环
-            public help()
+        public help()
         {
             StreamReader r = new StreamReader(@"./data/help.txt", Encoding.UTF8);
-            helpword=r.ReadToEnd();
+            helpword = r.ReadToEnd();
             r.Close();
         }
 
@@ -19,7 +20,8 @@ namespace duqu
     class duqu
     {
         static void Main()
-        {   help helpw = new help();//读取help文档
+        {
+            help helpw = new help();//读取help文档
             FileInfo newFile1 = new FileInfo(@"./data/all.xlsx");
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -31,7 +33,8 @@ namespace duqu
             method m1 = new method(worksheet0, worksheet1);
             Console.WriteLine(help.helpword);
             while (help.key == 0)//建立循环
-            {    Console.WriteLine("这里是开头");
+            {
+                Console.WriteLine("这里是开头");
                 string mode = Console.ReadLine();
                 switch (mode)
                 {
@@ -68,14 +71,14 @@ namespace duqu
                             Console.WriteLine(help.helpword);
                         }
                         break;
-                       case "t":
+                    case "t":
                         help.key = 1;
                         break;
-                       case "find": 
-                       m1.changword.findwordmean();
+                    case "find":
+                        m1.changword.findwordmean();
                         break;
-                       case "addword":
-                       m1.changword.addword();   
+                    case "addword":
+                        m1.changword.addword();
                         break;
                 }
             }
@@ -84,7 +87,7 @@ namespace duqu
     }
     class method
     {
-       public mean changword;
+        public mean changword;
         ExcelWorksheet worksheet0, worksheet1;
         public method(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1)
         {
@@ -152,11 +155,11 @@ namespace duqu
             switch (s)
             {
                 case "t": //退出程序
-                    help.key=1;
-                    point=0;
+                    help.key = 1;
+                    point = 0;
                     break;
                 case "z": //跳转至开头
-                        point = (int)chec.跳转; break;
+                    point = (int)chec.跳转; break;
                 case "help"://查看help文档
                     {
                         Console.WriteLine(help.helpword);
@@ -200,15 +203,15 @@ namespace duqu
                     }
                     break;
                 case "find": //查找单词意思
-                { 
-                      changword.findwordmean();
-                      checkinput(ref point, danciwhere);
-                }
-                break;
+                    {
+                        changword.findwordmean();
+                        checkinput(ref point, danciwhere);
+                    }
+                    break;
                 default: point = (int)chec.继续; break;
             }
         }//检查输入字符并进行操作
-     }
+    }
     class mean
     {
         private ExcelWorksheet worksheet0;
@@ -222,30 +225,34 @@ namespace duqu
             this.dancinumber = int.Parse(number.Substring(0, number.Length - 1));
         }
         public void addword()
-        {  string s;
-           Console.WriteLine("开始录入，输入e退出"); 
-          while(true){
-            Console.WriteLine("单词");
-            s=Console.ReadLine();
-            if(s=="e")break;
-            else{
-         worksheet0.Cells[dancinumber + 1, 1].Value = s;
-            worksheet0.Cells[dancinumber + 1, 3].Value = 5;
+        {
+            string s;
+            Console.WriteLine("开始录入，输入e退出");
+            while (true)
+            {
+                Console.WriteLine("单词");
+                s = Console.ReadLine();
+                if (s == "e") break;
+                else
+                {
+                    worksheet0.Cells[dancinumber + 1, 1].Value = s;
+                    worksheet0.Cells[dancinumber + 1, 3].Value = 5;
+                }
+           
+                Console.WriteLine("意思");
+                s = Console.ReadLine();
+                if (s == "e")
+                {
+                    Console.WriteLine("这次输入的单词无效");
+                    break;
+                }
+                else
+                {
+                    worksheet0.Cells[dancinumber + 1, 2].Value = s;
+                     dancinumber++;
+                }
             }
-           inputmean:
-            Console.WriteLine("意思");
-            s=Console.ReadLine();
-            if(s=="e")
-            {Console.WriteLine("请先输入单词意思");
-             goto inputmean;
-            }
-            else{
-            worksheet0.Cells[dancinumber + 1, 2].Value = s;
-            }
-          }
-        
             Console.WriteLine("添加完毕,在程序正常关闭后生效（不要按右上，按t）");
-            dancinumber++;
             worksheet1.Cells[1, 1].Value = dancinumber;
         }
         public void addmean(int danciwhere)
@@ -291,35 +298,36 @@ namespace duqu
         }
         public void findwordmean()
         {
-            wordfind w = new wordfind(worksheet0,dancinumber);
+            wordfind w = new wordfind(worksheet0, dancinumber);
             Console.WriteLine("输入单词");
             string input = Console.ReadLine();
-            bool findornot=true;
-            foreach(string[] g in w)
-            {   
-                if(g[0].Equals(input))
-                {  
+            bool findornot = true;
+            foreach (string[] g in w)
+            {
+                if (g[0].Equals(input))
+                {
                     Console.WriteLine(g[1]);
-                    findornot =false;
+                    findornot = false;
                     break;
                 }
             }
-           if(findornot)
-           {Console.WriteLine("没有找到这个单词,以下为相似单词结果");
-            fuzzyfind(input,w);
-           }
+            if (findornot)
+            {
+                Console.WriteLine("没有找到这个单词,以下为相似单词结果");
+                fuzzyfind(input, w);
+            }
         }
-        void fuzzyfind(string word,wordfind w)
-        {   
-            double Length=word.Length;
-            double similarlv =0;
-            foreach(string[] s in w)
-            {    
-                  similarlv=new SimilarityTool().CompareStrings(word,s[0]);
-               if(similarlv>=0.7)
-               {
-                   Console.WriteLine(s[0]+"\n"+s[1]+"\n");
-               }
+        void fuzzyfind(string word, wordfind w)
+        {
+            double Length = word.Length;
+            double similarlv = 0;
+            foreach (string[] s in w)
+            {
+                similarlv = new SimilarityTool().CompareStrings(word, s[0]);
+                if (similarlv >= 0.7)
+                {
+                    Console.WriteLine(s[0] + "\n" + s[1] + "\n");
+                }
             }
         }
     }
