@@ -14,7 +14,7 @@ namespace selectsheet
             exit = false;
             fill_names = new List<string>();
             getsheetname();
-            helpword = "查看help文档:help\n查看可用表:get\n添加表:add\n移除表:remove\n选择表进入背单词:select\n";
+            helpword = "查看help文档:help\n查看可用表:get\n添加表:add\n移除表:remove\n选择表进入背单词:select\n退出:t\n";
         }
         public string operate()
         {
@@ -26,7 +26,7 @@ namespace selectsheet
             }
             return getsheetpath();
         }
-        private void checkinput()
+        private void checkinput()//检测输入并调用相应方法
         {
             string input = Console.ReadLine();
             switch (input)
@@ -46,9 +46,15 @@ namespace selectsheet
                 case "select":
                     exit = true;
                     break;
+                case "t":
+                Environment.Exit(0);
+                break;    
+                default:
+                Console.WriteLine("没有这种操作");
+                break;
             }
         }
-        private void getsheetname()
+        private void getsheetname()//初始化file_names
         {
             var files = Directory.GetFiles("./data/", "*.xlsx");
             foreach (var file in files)
@@ -57,7 +63,7 @@ namespace selectsheet
                 fill_names.Add(url);
             }
         }
-        private void return_sheetname()
+        private void return_sheetname()//输出所有表名
         {
             Console.WriteLine("以下为可用表");
             foreach (string s in fill_names)
@@ -69,15 +75,8 @@ namespace selectsheet
             string Path = "";
         star:
             Console.WriteLine("请输入表名");
-            string book = Console.ReadLine();
-            foreach (string s in fill_names)
-            {
-                if (s.Equals(book))
-                {
-                    exist = true;
-                    break;
-                }
-            }
+            string book = Console.ReadLine();//获取表名
+            exist = checkrepeat(book);
             if (exist)
             {
                 Path = "./data/" + book + ".xlsx";
@@ -91,49 +90,74 @@ namespace selectsheet
             }
             return Path;
         }
-        private void addsheet()
+        private void addsheet()//添加表
         {
-            Console.WriteLine("创建成功后程序会退出,请重新打开");
-            Console.WriteLine("请输入表名");
-            string sheetpath = @"data/" + Console.ReadLine() + ".xlsx";
-            FileInfo newFile1 = new FileInfo(sheetpath);
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using (ExcelPackage package = new ExcelPackage(newFile1))
-            {
-                ExcelWorksheet worksheet1 = package.Workbook.Worksheets.Add("Sheet1");//创建worksheet
-                ExcelWorksheet worksheet2 = package.Workbook.Worksheets.Add("Sheet2");
-                worksheet2.Cells[1, 1].Value = 0;
-                package.Save();
-            }
-            System.Diagnostics.Process exep = new System.Diagnostics.Process();
-            exep.StartInfo.FileName = @"DanciReLoding\c#.exe";
-            exep.StartInfo.CreateNoWindow = false;
-            exep.StartInfo.UseShellExecute = false;
-            exep.Start();
-            Environment.Exit(0);
-        }
-        private void removesheet()
-        {
-            Console.WriteLine("删除成功后程序会退出,请重新打开");
             Console.WriteLine("请输入表名");
             string sheetname = Console.ReadLine();
-            string sheetpath = @"data/" + sheetname + ".xlsx";
-            Console.WriteLine("你即将删除表{0},确认吗?(yes/no)", sheetname);
-            sheetname = Console.ReadLine();//懒得弄新变量了,凑合用一下
-            if (sheetname.Equals("yes"))
+            if (!checkrepeat(sheetname))//判断是否有重复
             {
-                File.Delete(sheetpath);
-                Console.WriteLine("删除成功");
+                string sheetpath = @"data/" + sheetname + ".xlsx";//获取表名
+                FileInfo newFile1 = new FileInfo(sheetpath);
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                using (ExcelPackage package = new ExcelPackage(newFile1))
+                {
+                    ExcelWorksheet worksheet1 = package.Workbook.Worksheets.Add("Sheet1");//创建worksheet
+                    ExcelWorksheet worksheet2 = package.Workbook.Worksheets.Add("Sheet2");
+                    worksheet2.Cells[1, 1].Value = 0;//设置单词数
+                    package.Save();
+                }
+                Console.WriteLine("添加成功");
                 System.Diagnostics.Process exep = new System.Diagnostics.Process();
-                exep.StartInfo.FileName = @"DanciReLoding\c#.exe";
+                exep.StartInfo.FileName = @"DanciReLoding\c#.exe";//设置中转程序路径
                 exep.StartInfo.CreateNoWindow = false;
                 exep.StartInfo.UseShellExecute = false;
-                exep.Start();
-                Environment.Exit(0);
+                exep.Start();//启动中转,重新打开本程序以保存
                 Environment.Exit(0);
             }
             else
-                Console.WriteLine("取消删除");
+            {
+                Console.WriteLine("已存在同名的表");
+            }
+
+        }
+        private void removesheet()//删除表
+        {
+            Console.WriteLine("请输入表名");
+            string sheetname = Console.ReadLine();
+            if (!checkrepeat(sheetname))//判断是否存在此表
+            {
+                string sheetpath = @"data/" + sheetname + ".xlsx";//获取删除表的路径
+                Console.WriteLine("你即将删除表{0},确认吗?(yes/no)", sheetname);
+                sheetname = Console.ReadLine();//懒得弄新变量了,凑合用一下
+                if (sheetname.Equals("yes"))
+                {
+                    File.Delete(sheetpath);
+                    Console.WriteLine("删除成功\n");
+                    System.Diagnostics.Process exep = new System.Diagnostics.Process();
+                    exep.StartInfo.FileName = @"DanciReLoding\c#.exe";//同addsheet
+                    exep.StartInfo.CreateNoWindow = false;
+                    exep.StartInfo.UseShellExecute = false;
+                    exep.Start();
+                    Environment.Exit(0);
+                }
+                else
+                    Console.WriteLine("取消删除");
+            }
+            else
+             Console.WriteLine("表不存在");
+        }
+        private bool checkrepeat(string s)//检查是否存在此文件名
+        {
+            bool repeat = true;
+            foreach (string tool in fill_names)
+            {
+                if (tool.Equals(s))
+                {
+                    repeat = true;
+                    break;
+                }
+            }
+            return repeat;
         }
     }
 }

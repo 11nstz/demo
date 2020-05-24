@@ -34,11 +34,11 @@ namespace duqu
             ExcelWorkbook workbook = (ExcelWorkbook)package.Workbook;
             ExcelWorksheet worksheet0 = (ExcelWorksheet)workbook.Worksheets[0];
             ExcelWorksheet worksheet1 = (ExcelWorksheet)workbook.Worksheets[1];
-
             method m1 = new method(worksheet0, worksheet1);
             while (help.key == 0)//建立循环
             {   Console.WriteLine(help.helpword);
-                Console.WriteLine("这里是开头");
+                Console.WriteLine("这里是开头\n");
+                Console.WriteLine("此表有{0}个单词",worksheet1.Cells[1,1].Value);
                 string mode = Console.ReadLine();
                 switch (mode)
                 {
