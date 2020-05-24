@@ -1,0 +1,139 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using OfficeOpenXml;
+namespace selectsheet
+{
+    class sheet
+    {
+        bool exit;//退出sheet操作
+        string helpword;
+        List<string> fill_names;
+        public sheet()
+        {
+            exit = false;
+            fill_names = new List<string>();
+            getsheetname();
+            helpword = "查看help文档:help\n查看可用表:get\n添加表:add\n移除表:remove\n选择表进入背单词:select\n";
+        }
+        public string operate()
+        {
+            Console.WriteLine(helpword);
+            while (!exit)
+            {
+                Console.WriteLine("请输入操作");
+                checkinput();
+            }
+            return getsheetpath();
+        }
+        private void checkinput()
+        {
+            string input = Console.ReadLine();
+            switch (input)
+            {
+                case "get":
+                    return_sheetname();
+                    break;
+                case "add":
+                    addsheet();
+                    break;
+                case "remove":
+                    removesheet();
+                    break;
+                case "help":
+                    Console.WriteLine(helpword);
+                    break;
+                case "select":
+                    exit = true;
+                    break;
+            }
+        }
+        private void getsheetname()
+        {
+            var files = Directory.GetFiles("./data/", "*.xlsx");
+            foreach (var file in files)
+            {
+                var url = System.IO.Path.GetFileNameWithoutExtension(file);
+                fill_names.Add(url);
+            }
+        }
+        private void return_sheetname()
+        {
+            Console.WriteLine("以下为可用表");
+            foreach (string s in fill_names)
+                Console.WriteLine(s);
+        }
+        private string getsheetpath()//选择表
+        {
+            bool exist = false;//判断是否存在表
+            string Path = "";
+        star:
+            Console.WriteLine("请输入表名");
+            string book = Console.ReadLine();
+            foreach (string s in fill_names)
+            {
+                if (s.Equals(book))
+                {
+                    exist = true;
+                    break;
+                }
+            }
+            if (exist)
+            {
+                Path = "./data/" + book + ".xlsx";
+                Console.Clear();
+            }
+            else
+            {
+                Console.WriteLine("不存在此表,请重新输入");
+                return_sheetname();
+                goto star;
+            }
+            return Path;
+        }
+        private void addsheet()
+        {
+            Console.WriteLine("创建成功后程序会退出,请重新打开");
+            Console.WriteLine("请输入表名");
+            string sheetpath = @"data/" + Console.ReadLine() + ".xlsx";
+            FileInfo newFile1 = new FileInfo(sheetpath);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage package = new ExcelPackage(newFile1))
+            {
+                ExcelWorksheet worksheet1 = package.Workbook.Worksheets.Add("Sheet1");//创建worksheet
+                ExcelWorksheet worksheet2 = package.Workbook.Worksheets.Add("Sheet2");
+                worksheet2.Cells[1, 1].Value = 0;
+                package.Save();
+            }
+            System.Diagnostics.Process exep = new System.Diagnostics.Process();
+            exep.StartInfo.FileName = @"DanciReLoding\c#.exe";
+            exep.StartInfo.CreateNoWindow = false;
+            exep.StartInfo.UseShellExecute = false;
+            exep.Start();
+            Environment.Exit(0);
+        }
+        private void removesheet()
+        {
+            Console.WriteLine("删除成功后程序会退出,请重新打开");
+            Console.WriteLine("请输入表名");
+            string sheetname = Console.ReadLine();
+            string sheetpath = @"data/" + sheetname + ".xlsx";
+            Console.WriteLine("你即将删除表{0},确认吗?(yes/no)", sheetname);
+            sheetname = Console.ReadLine();//懒得弄新变量了,凑合用一下
+            if (sheetname.Equals("yes"))
+            {
+                File.Delete(sheetpath);
+                Console.WriteLine("删除成功");
+                System.Diagnostics.Process exep = new System.Diagnostics.Process();
+                exep.StartInfo.FileName = @"DanciReLoding\c#.exe";
+                exep.StartInfo.CreateNoWindow = false;
+                exep.StartInfo.UseShellExecute = false;
+                exep.Start();
+                Environment.Exit(0);
+                Environment.Exit(0);
+            }
+            else
+                Console.WriteLine("取消删除");
+        }
+    }
+}
