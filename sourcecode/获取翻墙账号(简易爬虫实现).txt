@@ -1,0 +1,29 @@
+using System;
+using System.Net;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+namespace c_
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            HttpWebRequest HttpWReq =
+            (HttpWebRequest)WebRequest.Create("http://blog.freeair999.club/ss%E5%85%8D%E8%B4%B9%E8%B4%A6%E5%8F%B7/");
+            //获得响应
+            HttpWebResponse HttpWResp = (HttpWebResponse)HttpWReq.GetResponse();
+            Stream dataStream = HttpWResp.GetResponseStream();//获取页面源码
+            StreamReader streamReader = new StreamReader(dataStream, Encoding.UTF8);
+            string s = @"\b(账号|端口|密码|加密方式|协议|混淆).*(?=</p>)";
+            foreach (Match match in Regex.Matches(streamReader.ReadToEnd(), s))
+            {     
+                string s1 = match.Value;
+                Console.WriteLine(s1.Replace("</strong>","")+"\n");
+            }
+            Console.WriteLine("over");
+            Console.ReadKey();
+        }
+    }
+}
+
