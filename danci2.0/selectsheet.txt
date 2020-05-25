@@ -124,7 +124,7 @@ namespace selectsheet
         {
             Console.WriteLine("请输入表名");
             string sheetname = Console.ReadLine();
-            if (!checkrepeat(sheetname))//判断是否存在此表
+            if (checkrepeat(sheetname))//判断是否存在此表
             {
                 string sheetpath = @"data/" + sheetname + ".xlsx";//获取删除表的路径
                 Console.WriteLine("你即将删除表{0},确认吗?(yes/no)", sheetname);
@@ -148,7 +148,7 @@ namespace selectsheet
         }
         private bool checkrepeat(string s)//检查是否存在此文件名
         {
-            bool repeat = true;
+            bool repeat = false;
             foreach (string tool in fill_names)
             {
                 if (tool.Equals(s))

@@ -19,15 +19,14 @@ namespace duqu
         }
 
     }
-    class duqu
+    class duqu//开始
     {
         static void Main()
         {   
             help helpw = new help();//初始化静态变量
-            Console.WriteLine("请选择表,以下为可用的表");
             sheet  sheet_operator = new sheet();
             string url =sheet_operator.operate();
-
+            
             FileInfo newFile1 = new FileInfo(url);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;//nuple需要的东西
             ExcelPackage package = new ExcelPackage(newFile1);//创建包
@@ -302,7 +301,7 @@ namespace duqu
             }
 
         }
-        public void findwordmean()
+        public void findwordmean()//查找单词
         {
             wordfind w = new wordfind(worksheet0, dancinumber);//创建查找对象
             Console.WriteLine("输入单词");
@@ -323,7 +322,7 @@ namespace duqu
                 fuzzyfind(input, w);//调用模糊查找
             }
         }
-        void fuzzyfind(string word, wordfind w)
+        void fuzzyfind(string word, wordfind w)//模糊查找
         {
             double Length = word.Length;
             double similarlv = 0;
