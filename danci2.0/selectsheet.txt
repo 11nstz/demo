@@ -108,7 +108,7 @@ namespace selectsheet
                 }
                 Console.WriteLine("添加成功");
                 System.Diagnostics.Process exep = new System.Diagnostics.Process();
-                exep.StartInfo.FileName = @"DanciReLoding\c#.exe";//设置中转程序路径
+                exep.StartInfo.FileName = @"DanciReLoding/c#.exe";//设置中转程序路径
                 exep.StartInfo.CreateNoWindow = false;
                 exep.StartInfo.UseShellExecute = false;
                 exep.Start();//启动中转,重新打开本程序以保存
@@ -134,7 +134,7 @@ namespace selectsheet
                     File.Delete(sheetpath);
                     Console.WriteLine("删除成功\n");
                     System.Diagnostics.Process exep = new System.Diagnostics.Process();
-                    exep.StartInfo.FileName = @"DanciReLoding\c#.exe";//同addsheet
+                    exep.StartInfo.FileName = @"DanciReLoding/c#.exe";//同addsheet
                     exep.StartInfo.CreateNoWindow = false;
                     exep.StartInfo.UseShellExecute = false;
                     exep.Start();
