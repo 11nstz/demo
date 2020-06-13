@@ -4,29 +4,34 @@ using System;
 using OfficeOpenXml;
 using excel;
 using selectsheet;
+using similarcompare;
 namespace duqu
 {
     class help//用于存放静态变量
     {
         public static string helpword;//帮助文档
-        public static int key;//判断是否循环
+        public static bool allcyc_key;//判断总程序是否继续
+        public static bool outputcyc_key;//判断输出程序是否继续
+        public static int danciwhere;//记录当前指向单词位置
         public help()
         {  //获取help文档
-           StreamReader r = new StreamReader(@"./data/help.txt", Encoding.UTF8);
-           helpword = r.ReadToEnd();
-           r.Close();
-           //获取完毕
+            StreamReader r = new StreamReader(@"./data/help.txt", Encoding.UTF8);
+            allcyc_key = true;
+            danciwhere = 0;
+            helpword = r.ReadToEnd();
+            r.Close();
+            //获取完毕
         }
 
     }
     class duqu//开始
     {
         static void Main()
-        {   
+        {
             help helpw = new help();//初始化静态变量
-            sheet  sheet_operator = new sheet();
-            string url =sheet_operator.operate();
-            
+            sheet sheet_operator = new sheet();
+            string url = sheet_operator.operate();
+
             FileInfo newFile1 = new FileInfo(url);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;//nuple需要的东西
             ExcelPackage package = new ExcelPackage(newFile1);//创建包
@@ -34,10 +39,11 @@ namespace duqu
             ExcelWorksheet worksheet0 = (ExcelWorksheet)workbook.Worksheets[0];
             ExcelWorksheet worksheet1 = (ExcelWorksheet)workbook.Worksheets[1];
             method m1 = new method(worksheet0, worksheet1);
-            while (help.key == 0)//建立循环
-            {   Console.WriteLine(help.helpword);
+            Console.WriteLine(help.helpword);
+            while (help.allcyc_key)//建立循环
+            {
                 Console.WriteLine("这里是开头\n");
-                Console.WriteLine("此表有{0}个单词",worksheet1.Cells[1,1].Value);
+                Console.WriteLine("此表有{0}个单词", worksheet1.Cells[1, 1].Value);
                 string mode = Console.ReadLine();
                 switch (mode)
                 {
@@ -75,7 +81,7 @@ namespace duqu
                         }
                         break;
                     case "t":
-                        help.key = 1;
+                        help.allcyc_key = false;
                         break;
                     case "find":
                         m1.changword.findwordmean();
@@ -100,39 +106,47 @@ namespace duqu
         }
         public void outputword()//输出固定单词表
         {
-            int point = 1;//表示是否退出
+            help.outputcyc_key = true;
             Console.WriteLine("从第几个开始？");
-            int star = int.Parse(Console.ReadLine());//第几个单词开始
-            while (worksheet0.Cells[star, 1].Value != null && point == 1)
+            help.danciwhere = int.Parse(Console.ReadLine());//第几个单词开始
+            while (worksheet0.Cells[help.danciwhere, 1].Value != null && help.outputcyc_key)
             {
-                Console.WriteLine(worksheet0.Cells[star, 1].Value + " " + star + " 难度" + worksheet0.Cells[star, 3].Value);//标记当前位置并输出
-                checkinput(ref point, star);
-                if (point == (int)chec.继续)
+                Console.WriteLine(worksheet0.Cells[help.danciwhere, 1].Value + " " + help.danciwhere + " 难度" + worksheet0.Cells[help.danciwhere, 3].Value);//标记当前位置并输出
+                checkinput();
+                if (help.outputcyc_key)
                 {
-                    Console.WriteLine(worksheet0.Cells[star, 2].Value + " " + star);
-                    checkinput(ref point, star);
-                    star++;
+                    Console.WriteLine(worksheet0.Cells[help.danciwhere, 2].Value + " " + help.danciwhere);
+                    checkinput();
+                    help.danciwhere++;
                 }
             }
-            if (point == 1) { Console.WriteLine("没有这么多单词了"); }
+            if (help.outputcyc_key)
+            {
+                help.danciwhere = 0;
+                Console.WriteLine("没有这么多单词了");
+            }
         }
         public void randomword(int[] shunxu)//输出随机单词
         {
-            int point = 1;//表示是否退出
+            help.outputcyc_key = true;
             int biaohao = 0;// 记录数组下标
-            while (point == 1 && biaohao < shunxu.Length)
+            while (help.outputcyc_key && biaohao < shunxu.Length)
             {
-                int a = shunxu[biaohao];//提取下一个单词序号
-                Console.WriteLine(worksheet0.Cells[a, 1].Value + " " + (biaohao + 1) + " 难度" + worksheet0.Cells[a, 3].Value);//标记当前位置并输出
-                checkinput(ref point, a);
-                if (point == (int)chec.继续)
+                help.danciwhere = shunxu[biaohao];//提取下一个单词序号
+                Console.WriteLine(worksheet0.Cells[help.danciwhere, 1].Value + " " + (biaohao + 1) + " 难度" + worksheet0.Cells[help.danciwhere, 3].Value);//标记当前位置并输出
+                checkinput();
+                if (help.outputcyc_key)
                 {
-                    Console.WriteLine(worksheet0.Cells[a, 2].Value + " " + (biaohao + 1));
-                    checkinput(ref point, a);
+                    Console.WriteLine(worksheet0.Cells[help.danciwhere, 2].Value + " " + (biaohao + 1));
+                    checkinput();
                 }
                 biaohao++;
             }
-            if (point == 1) { Console.WriteLine("没有这么多单词了"); }
+            if (help.outputcyc_key)
+            {
+                help.danciwhere = 0;
+                Console.WriteLine("没有这么多单词了");
+            }
         }
         public void creatrandom(ref int[] a, int number)//创建读取的单词序号
         {
@@ -152,68 +166,68 @@ namespace duqu
             }
 
         }
-        void checkinput(ref int point, int danciwhere)//检测输入操作
+        void checkinput()//检测单词输出部分用户的操作
         {
             string s = Console.ReadLine();
             switch (s)
             {
                 case "t": //退出程序
-                    help.key = 1;
-                    point = 0;
+                    help.allcyc_key = false;
+                    help.outputcyc_key = false;
                     break;
                 case "z": //跳转至开头
-                    point = (int)chec.跳转;
-                     Console.Clear();
+                    help.outputcyc_key = false;
+                    Console.Clear();
                     break;
                 case "help"://查看help文档
                     {
                         Console.WriteLine(help.helpword);
-                        checkinput(ref point, danciwhere);
+                        checkinput();
                         break;
                     }
                 case "addword"://增加单词
                     {
                         changword.addword();
-                        checkinput(ref point, danciwhere);
+                        checkinput();
                     }
                     break;
                 case "problem"://增加难度值
                     {
-                        string tool1 = worksheet0.Cells[danciwhere, 3].ToText();
+                        string tool1 = worksheet0.Cells[help.danciwhere, 3].ToText();
                         int tool2 = int.Parse(tool1.Substring(0, tool1.Length - 1));
                         tool2++;
-                        worksheet0.Cells[danciwhere, 3].Value = tool2.ToString();
+                        worksheet0.Cells[help.danciwhere, 3].Value = tool2.ToString();
                     }
                     break;
                 case "solve"://降低难度值
                     {
 
-                        string tool1 = worksheet0.Cells[danciwhere, 3].ToText();
+                        string tool1 = worksheet0.Cells[help.danciwhere, 3].ToText();
                         int tool2 = int.Parse(tool1.Substring(0, tool1.Length - 1));
                         tool2--;
                         if (tool2 < 0) { tool2 = 0; }
-                        worksheet0.Cells[danciwhere, 3].Value = tool2.ToString();
+                        worksheet0.Cells[help.danciwhere, 3].Value = tool2.ToString();
                     }
                     break;
                 case "addmean"://补充单词意思
                     {
-                        changword.addmean(danciwhere);
-                        checkinput(ref point, danciwhere);
+                        changword.addmean(help.danciwhere);
+                        checkinput();
                     }
                     break;
                 case "changemean"://改变单词意思
                     {
-                        changword.changmean(danciwhere);
-                        checkinput(ref point, danciwhere);
+                        changword.changmean(help.danciwhere);
+                        checkinput();
                     }
                     break;
                 case "find": //查找单词意思
                     {
                         changword.findwordmean();
-                        checkinput(ref point, danciwhere);
+                        checkinput();
                     }
                     break;
-                default: point = (int)chec.继续; break;
+                default: break;
             }
         }//检查输入字符并进行操作
     }
@@ -243,7 +257,7 @@ namespace duqu
                     worksheet0.Cells[dancinumber + 1, 1].Value = s;
                     worksheet0.Cells[dancinumber + 1, 3].Value = 5;
                 }
-           
+
                 Console.WriteLine("意思");
                 s = Console.ReadLine();
                 if (s == "e")
@@ -301,6 +315,27 @@ namespace duqu
             }
 
         }
+         public void changword(int danciwhere)
+        {
+            Console.WriteLine("输入单词");
+            string wordmean = Console.ReadLine();
+            Console.WriteLine("你输入的单词为\t" + wordmean + "\n" + "单词会被完全取代，yes or no？");
+            string save = Console.ReadLine();
+            switch (save)
+            {
+                case "yes":
+                    worksheet0.Cells[danciwhere, 1].Value = wordmean;
+                    Console.WriteLine("添加完毕,在程序正常关闭后生效（不要按右上，按t）");
+                    break;
+                case "no":
+                    Console.WriteLine("停止添加");
+                    break;
+                default:
+                    Console.WriteLine("未确认，停止添加");
+                    break;
+            }
+
+        }
         public void findwordmean()//查找单词
         {
             wordfind w = new wordfind(worksheet0, dancinumber);//创建查找对象
@@ -322,24 +357,26 @@ namespace duqu
                 fuzzyfind(input, w);//调用模糊查找
             }
         }
-        void fuzzyfind(string word, wordfind w)//模糊查找
+        private void fuzzyfind(string word, wordfind w)//模糊查找
         {
-            double Length = word.Length;
-            double similarlv = 0;
+            
+            // double similarlv = 0;
+           double similarlv=0;
             foreach (string[] s in w)
-            {
-                similarlv = new SimilarityTool().CompareStrings(word, s[0]);
-                if (similarlv >= 0.7)
+            {   
+                similarlv=similarcompare.operate.StringCompare(word,s[0]);
+                double Length = s[0].Length;
+                if(similarlv<=3 && similarlv/Length<=0.25)
                 {
                     Console.WriteLine(s[0] + "\n" + s[1] + "\n");
                 }
+                // similarlv = new SimilarityTool().CompareStrings(word, s[0]);
+                // if (similarlv >= 0.7)
+                // {
+                //     Console.WriteLine(s[0] + "\n" + s[1] + "\n");
+                // }
             }
         }
     }
-    enum chec//操作
-    {
-        继续 = 1,
-        退出 = 2,
-        跳转 = 3,
-    }
+
 }
